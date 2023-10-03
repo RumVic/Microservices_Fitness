@@ -1,0 +1,42 @@
+# Spring Boot configuration
+spring:
+  profiles:
+    active: development
+  # Security configuration
+  security:
+    user:
+      name: user
+      password: user
+  # Data base application.yml
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/fitness_V2
+    username: postgres
+    password: postgres
+  # flyway base application.yml
+  flyway:
+    locations: classpath:db/migration/serviceProduct
+    enabled: true # Optional: Set to true (default) to enable Flyway, or false to disable it.
+    table: my_schema_history # Optional: Set the name of the schema history table (default is "flyway_schema_history").
+    baselineOnMigrate: true # Optional: Set to true to perform a baseline migration if no migrations have been applied yet.
+    validateOnMigrate: true # Optional: Set to true to validate applied migrations against available ones.
+  # JPA properties
+  jpa:
+    hibernate:
+      ddl-auto: none # When you launch the application for the first time - switch "none" at "create"
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    generate-ddl: true
+
+# Logger configuration
+logging:
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+  level:
+    org.springframework: info
+    org.hibernate: debug
+# Server configuration
+server:
+  port: 8092 #set your port
