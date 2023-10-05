@@ -10,4 +10,3 @@
 --	'ROLE_ADMIN',
 --	'ACTIVE',
 --	null
---	);

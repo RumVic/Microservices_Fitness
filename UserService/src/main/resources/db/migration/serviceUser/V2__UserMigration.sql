@@ -1,5 +1,4 @@
 CREATE SCHEMA IF NOT EXISTS appUser;
-
 CREATE TABLE IF NOT EXISTS appUser.user_fitness
 (
     id uuid NOT NULL,
@@ -14,3 +13,5 @@ CREATE TABLE IF NOT EXISTS appUser.user_fitness
     CONSTRAINT user_fitness_pkey PRIMARY KEY (id),
     CONSTRAINT uk_iexs7prkdjij3n0b8csfpm32t UNIQUE (login)
 );
+ALTER TABLE IF EXISTS appUser.user_fitness
+    OWNER to postgres;
