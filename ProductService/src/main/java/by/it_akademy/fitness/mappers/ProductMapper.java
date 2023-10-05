@@ -5,7 +5,6 @@ import by.it_akademy.fitness.odto.OutputProductDTO;
 import by.it_akademy.fitness.storage.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 @Component
 public class ProductMapper {
 
-    public OutPage<OutputProductDTO> map(Page<Product> productOutPage) {
+    public OutPage<OutputProductDTO>map(Page<Product> productOutPage) {
 
         OutPage<OutputProductDTO> outPage = new OutPage<>();
 
