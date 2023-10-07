@@ -11,6 +11,6 @@ import java.util.UUID;
 
 public interface IProductStorage extends JpaRepository<Product, UUID> {
     Optional<Product> findById(@NonNull UUID id);
-    Page<Product> findAll(Pageable pageable);
+    Page<Product> findAll(@NonNull Pageable pageable);
 
 }

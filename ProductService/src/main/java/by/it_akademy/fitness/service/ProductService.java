@@ -24,6 +24,18 @@ import java.util.UUID;
 @Transactional(readOnly = true)
 public class ProductService implements IProductService {
 
+    private final String CREATED = "Line in food journal was created";
+    private final String UPDATED = "Line in food journal was updated";
+
+    private final String EDITED = "Line already edited by somebody else";
+
+    private final String LOCK = "Editing forbidden";
+
+    private final IProductStorage storage;
+
+    private final JwtUtil jwtUtil;
+    private final ProductMapper productMapper;
+
     public ProductService(IProductStorage storage,
                           // TODO IUserService userService,
                           JwtUtil jwtUtil,
@@ -36,22 +48,10 @@ public class ProductService implements IProductService {
         this.productMapper = productMapper;
     }
 
-    private final String CREATED = "Line in food journal was created";
-    private final String UPDATED = "Line in food journal was updated";
-
-    private final String EDITED = "Line already edited by somebody else";
-
-    private final String LOCK = "Editing forbidden";
-
-    private final IProductStorage storage;
-
     // TODO private final IUserService userService;
 
-    private final JwtUtil jwtUtil;
+
     // TODO private final IAuditService auditService;
-
-    private final ProductMapper productMapper;
-
 
     @Override
     @Transactional

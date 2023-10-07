@@ -41,6 +41,18 @@
         </dependency>
     </dependencies>
     <build>
+<!--                Used this plugin for performing command "mvn flyway:repair" -->
+        <plugins>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:5432/fitness_V2</url>
+                    <user>postgres</user>
+                    <password>postgres</password>
+                </configuration>
+            </plugin>
+        </plugins>
         <finalName>ProductService</finalName>
     </build>
 </project>

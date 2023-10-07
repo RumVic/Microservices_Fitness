@@ -44,7 +44,7 @@ public class ProductServlet {
             @RequestParam int page,
             @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size);
-        OutPage products = this.service.get(pageable);
+        OutPage products = service.get(pageable);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 

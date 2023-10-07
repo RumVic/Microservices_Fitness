@@ -15,7 +15,8 @@ import java.util.UUID;
 @Setter
 @EqualsAndHashCode
 @ToString
-@Table(name = "product_fitness")
+@Table(name = "product_fitness", schema = "appproduct")
+// It is truly  needed. without definition schema hibernate cont mate query right way
 public class Product {
     @Id
     private UUID id;

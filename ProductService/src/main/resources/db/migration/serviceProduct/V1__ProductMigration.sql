@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS appProduct.product_fitness(
     weight double precision NOT NULL,
     CONSTRAINT product_fitness_pkey PRIMARY KEY (id)
 );
-ALTER TABLE IF EXISTS appProduct.product_fitness
-    OWNER to postgres;
+--ALTER TABLE IF EXISTS appProduct.product_fitness
+--    OWNER to postgres;
 
 CREATE TABLE IF NOT EXISTS appProduct.dish_fitness(
     id uuid NOT NULL,
@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS appProduct.dish_fitness(
     title character varying(255) COLLATE pg_catalog."default",
     CONSTRAINT dish_fitness_pkey PRIMARY KEY (id)
 );
-ALTER TABLE IF EXISTS appProduct.dish_fitness
-    OWNER to postgres;
+--ALTER TABLE IF EXISTS appProduct.dish_fitness
+--    OWNER to postgres;
 
 CREATE TABLE IF NOT EXISTS appProduct.composition_dish_fitness
 (
@@ -45,9 +45,8 @@ CREATE TABLE IF NOT EXISTS appProduct.composition_dish_fitness
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );
-
-ALTER TABLE IF EXISTS appProduct.composition_dish_fitness
-    OWNER to postgres;
+--ALTER TABLE IF EXISTS appProduct.composition_dish_fitness
+--    OWNER to postgres;
 
 CREATE TABLE IF NOT EXISTS appProduct.diary_food_fitness(
     id uuid NOT NULL,
@@ -69,6 +68,6 @@ CREATE TABLE IF NOT EXISTS appProduct.diary_food_fitness(
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );
-
-ALTER TABLE IF EXISTS appProduct.diary_food_fitness
-    OWNER to postgres;
+--
+--ALTER TABLE IF EXISTS appProduct.diary_food_fitness
+--    OWNER to postgres;
