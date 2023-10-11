@@ -1,18 +1,17 @@
 package by.it_akademy.fitness.security.filter;
 
 import by.it_akademy.fitness.security.costom.JwtAuthenticationException;
-import by.it_akademy.fitness.storage.api.IUserStorage;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -25,11 +24,14 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
-    @Autowired
-    private final IUserStorage userStorage;
-    @Autowired
+    public JwtAuthFilter(RestTemplate restTemplate, JwtUtil jwtUtil) {
+        this.restTemplate = restTemplate;
+        this.jwtUtil = jwtUtil;
+    }
+
+    private final RestTemplate restTemplate;
+
     private final JwtUtil jwtUtil;
 
     @Override
@@ -54,7 +56,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         jwtToken = authHeader.substring(7);
             email = jwtUtil.extractUsername(jwtToken);
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails myUser = userStorage.findByLogin(email);
+                UserDetails myUser =  restTemplate.getForObject(
+                        "http://localhost:8081/api/v1/fraud-check/{customerId}",
+                        User.class);//findByLogin(email);
                 if (jwtUtil.validateToken(jwtToken, myUser)) {
 
                     UsernamePasswordAuthenticationToken authToken =

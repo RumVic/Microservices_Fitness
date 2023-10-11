@@ -2,7 +2,7 @@
 spring:
   profiles:
     active: development
-  # Security configuration
+#   Security configuration
   security:
     user:
       name: user
@@ -35,6 +35,9 @@ logging:
   level:
     org.springframework: info
     org.hibernate: debug
+    org.springframework.security: DEBUG
+    org.springframework.security.authentication: INFO
+    org.springframework.security.access: DEBUG
 # Server configuration
 server:
   port: 8093 #set your port

@@ -3,8 +3,6 @@ package by.it_akademy.fitness.security.config;
 import by.it_akademy.fitness.security.costom.JwtAccessDeniedHandler;
 import by.it_akademy.fitness.security.costom.JwtAuthenticationEntryPoint;
 import by.it_akademy.fitness.security.filter.JwtAuthFilter;
-import by.it_akademy.fitness.storage.api.IUserStorage;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,24 +11,42 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
+
+
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter,
+                          // TODO IUserStorage userStorage,
+                          JwtAuthenticationEntryPoint authEntryPoint,
+                          RestTemplate restTemplate, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
+        this.jwtAuthFilter = jwtAuthFilter;
+        // TODO this.userStorage = userStorage;
+        this.authEntryPoint = authEntryPoint;
+        this.restTemplate = restTemplate;
+        this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+    }
+
+    String login = "login";
 
     private final JwtAuthFilter jwtAuthFilter;
 
-    private final IUserStorage userStorage;
+    // TODO private final IUserStorage userStorage;
 
 
     private final JwtAuthenticationEntryPoint authEntryPoint;
+
+    private final RestTemplate restTemplate;
 
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
@@ -40,12 +56,13 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST,"/**/login/**").permitAll()
                 .antMatchers("/**/registration/**").permitAll()
                 .antMatchers("/**/activation/**").permitAll()
                 .antMatchers("/**/login/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/**/product/**").permitAll()
                 .antMatchers(HttpMethod.PUT, "/**/users/**").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers("/**/me/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
+                .antMatchers("/**/me/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers("/**/users/**").hasAnyAuthority("ROLE_ADMIN")
                 .antMatchers("/**/recipe/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                 .antMatchers("/**/profile/**").hasAnyAuthority("ROLE_USER")
@@ -119,7 +136,17 @@ public class SecurityConfig {
                 //we use a static list
                 /**/
                 //return userDao.findByUsername(email);
-                return userStorage.findByLogin(login);
+
+//              TODO   FraudCheckResponse fraudCheckResponse = restTemplate.getForObject(
+//              TODO           "http://localhost:8081/api/v1/fraud-check/{customerId}",
+//              TODO           FraudCheckResponse.class,
+//              TODO           customer.getId()
+//              TODO   );
+
+                UserDetails user = restTemplate.getForObject(
+                        "http://localhost:8081/api/v1/fraud-check/{customerId}",
+                        User.class);
+                return user;
             }
         };
     }

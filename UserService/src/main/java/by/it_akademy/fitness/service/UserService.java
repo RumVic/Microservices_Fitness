@@ -1,8 +1,7 @@
 package by.it_akademy.fitness.service;
 
-import by.it_akademy.fitness.builder.UserBuilder;
+import by.it_akademy.fitness.buider.UserBuilder;
 import by.it_akademy.fitness.enams.EStatus;
-import by.it_akademy.fitness.enams.EntityType;
 import by.it_akademy.fitness.exception.LockException;
 import by.it_akademy.fitness.idto.InputUserByAdmin;
 import by.it_akademy.fitness.idto.InputUserDTO;
@@ -32,14 +31,13 @@ import java.time.Clock;
 import java.util.UUID;
 
 import static by.it_akademy.fitness.enams.EStatus.*;
-import static javax.swing.event.HyperlinkEvent.EventType.ACTIVATED;
 
 
 @Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserService implements IUserService, UserDetailsService {
+public class UserService implements IUserService, UserDetailsService{
 
 
     private final String CREATED = "The User was created";
@@ -293,6 +291,9 @@ public class UserService implements IUserService, UserDetailsService {
     }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+        UserDetails user = restTemplate.getForObject(
+                "http://localhost:8081/api/v1/fraud-check/{customerId}",
+                org.springframework.security.core.userdetails.User.class);
+        return user;
     }
 }

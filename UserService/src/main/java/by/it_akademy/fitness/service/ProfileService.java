@@ -1,6 +1,6 @@
 package by.it_akademy.fitness.service;
 
-import by.it_akademy.fitness.builder.ProfileBuilder;
+import by.it_akademy.fitness.buider.ProfileBuilder;
 import by.it_akademy.fitness.enams.EGender;
 import by.it_akademy.fitness.enams.ELifestyle;
 import by.it_akademy.fitness.exception.LockException;

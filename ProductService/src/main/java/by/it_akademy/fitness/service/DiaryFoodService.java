@@ -9,11 +9,8 @@ import by.it_akademy.fitness.odto.OutputDiaryFoodDTO;
 import by.it_akademy.fitness.service.api.*;
 import by.it_akademy.fitness.storage.api.IDiaryFoodStorage;
 import by.it_akademy.fitness.storage.entity.*;
-import by.it_akademy.fitness.util.enams.EntityType;
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.OptimisticLockException;
 import java.time.Clock;
@@ -36,16 +37,19 @@ public class ProductService implements IProductService {
     private final JwtUtil jwtUtil;
     private final ProductMapper productMapper;
 
+    private final RestTemplate restTemplate;
+
     public ProductService(IProductStorage storage,
                           // TODO IUserService userService,
                           JwtUtil jwtUtil,
                           //TODO IAuditService auditService,
-                          ProductMapper productMapper) {
+                          ProductMapper productMapper, RestTemplate restTemplate) {
         this.storage = storage;
         // TODO this.userService = userService;
         this.jwtUtil = jwtUtil;
         // TODO this.auditService = auditService;
         this.productMapper = productMapper;
+        this.restTemplate = restTemplate;
     }
 
     // TODO private final IUserService userService;
@@ -95,6 +99,8 @@ public class ProductService implements IProductService {
     @Override
     public OutPage<OutputProductDTO> get(Pageable pag) {
         Page<Product> pageOfProduct = storage.findAll(pag);
+        //String url = "http://localhost:8090/api/v1/audit/event";
+        //restTemplate.getForObject(url,String.class,CREATED);
         return productMapper.map(pageOfProduct);
     }
 

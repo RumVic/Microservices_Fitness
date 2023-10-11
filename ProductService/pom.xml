@@ -41,7 +41,7 @@
         </dependency>
     </dependencies>
     <build>
-<!--                Used this plugin for performing command "mvn flyway:repair" -->
+<!--  Used this plugin for performing command "mvn flyway:repair" -->
         <plugins>
             <plugin>
                 <groupId>org.flywaydb</groupId>
