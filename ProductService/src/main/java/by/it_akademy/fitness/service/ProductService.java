@@ -12,9 +12,15 @@ import by.it_akademy.fitness.storage.api.IProductStorage;
 import by.it_akademy.fitness.storage.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.OptimisticLockException;
@@ -99,8 +105,9 @@ public class ProductService implements IProductService {
     @Override
     public OutPage<OutputProductDTO> get(Pageable pag) {
         Page<Product> pageOfProduct = storage.findAll(pag);
-        //String url = "http://localhost:8090/api/v1/audit/event";
-        //restTemplate.getForObject(url,String.class,CREATED);
+//        String url = "http://localhost:8090/api/v1/event";
+//        restTemplate.getForObject(url,String.class,CREATED);
+        sendEventRequest(CREATED);
         return productMapper.map(pageOfProduct);
     }
 
@@ -144,11 +151,7 @@ public class ProductService implements IProductService {
                 .setCarbohydrates(idto.getCarbohydrates())
                 // TODO .setCreatedByRole(login)
                 .build());
-
-
         // TODO auditService.create(user, EntityType.PRODUCT, UPDATED, productUpdate.getId().toString());
-
-
         return productUpdate;
     }
 
@@ -177,6 +180,26 @@ public class ProductService implements IProductService {
         }
         if (idto.getWeight()<0 || idto.getWeight()==0){
             throw new IllegalStateException("You didn't pass the value of Weight");
+        }
+    }
+    public void sendEventRequest(String description){
+
+        String url = "http://localhost:8090/api/v1/event";//http://localhost:8090/api/v1/audit/event
+
+        //http://localhost:8090/api/v1/event?description=checkDercrpt
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("description", description);
+
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            System.out.println("Request was successful.");
+        } else {
+            System.out.println("Request failed with status code: " + responseEntity.getStatusCode());
         }
     }
 }

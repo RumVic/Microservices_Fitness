@@ -26,7 +26,7 @@ public class AuditService implements IAuditService {
     private final AuditMapper auditMapper;
     @Override
     @Transactional
-    public Audit create(String user,
+    public Audit create(String userId,
                         EntityType entityType,
                         String text,
                         String idEntity) {
@@ -40,7 +40,7 @@ public class AuditService implements IAuditService {
                         .setText(text)
                         .setType(entityType)
                         .setUid(idEntity)
-                        .setUser(user)
+                        .setUser(userId)
                         .build());
     }
     public OutPage<OutputAuditDTO> get(Pageable pag) {

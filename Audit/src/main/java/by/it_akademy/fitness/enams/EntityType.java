@@ -7,5 +7,4 @@ public enum EntityType {
     DIARY_FOOD,
     PROFILE,
     USER
-
 }

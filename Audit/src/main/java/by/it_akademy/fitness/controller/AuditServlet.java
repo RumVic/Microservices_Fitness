@@ -1,5 +1,7 @@
 package by.it_akademy.fitness.controller;
 
+import by.it_akademy.fitness.enams.EntityType;
+import by.it_akademy.fitness.idto.InputDTO;
 import by.it_akademy.fitness.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputAuditDTO;
 import by.it_akademy.fitness.service.api.IAuditService;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -25,9 +28,12 @@ public class AuditServlet {
 //            (@PathVariable(name = "uuid") String uuid) {
 //        return new ResponseEntity<>(service.getById(uuid), HttpStatus.OK);
 //    }
-//    @PostMapping("/event")
-//    public ResponseEntity<String> putEvent(@RequestParam String description){
-//       // service.create("myuser", EntityType.PRODUCT,description,"id");
-//        return new ResponseEntity<>( HttpStatus.OK);
-//    }
+    @PostMapping("/event")
+    public ResponseEntity<String> putEvent(@RequestBody InputDTO description){
+        service.create(description.getUserId()
+                ,description.getEntityType()
+                ,description.getDescription()
+                ,description.getEntityId());
+        return new ResponseEntity<>( HttpStatus.OK);
+    }
 }
