@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @ToString
 public class InputDTO {
     @NotNull
-    private EntityType entityType;
+    private String entityType;
     @NotNull
     private String description;
     @NotNull

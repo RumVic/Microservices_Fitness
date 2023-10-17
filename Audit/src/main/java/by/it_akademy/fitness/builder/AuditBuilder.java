@@ -4,6 +4,7 @@ import by.it_akademy.fitness.enams.EntityType;
 import by.it_akademy.fitness.storage.entity.Audit;
 
 
+import java.util.MissingFormatArgumentException;
 import java.util.UUID;
 
 public class AuditBuilder {
@@ -54,8 +55,10 @@ public class AuditBuilder {
         return this;
     }
 
-    public AuditBuilder setType(EntityType type) {
-        this.type = type;
+    public AuditBuilder setType(String type) {
+        if (type.equals("PRODUCT")){
+        this.type = EntityType.PRODUCT;
+        }else throw new MissingFormatArgumentException("not valid EntityType");
         return this;
     }
 

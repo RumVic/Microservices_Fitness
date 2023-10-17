@@ -1,4 +1,4 @@
-package by.it_akademy.fitness.controller;
+package by.it_akademy.fitness.controller.user;
 
 import by.it_akademy.fitness.exception.LockException;
 import by.it_akademy.fitness.idto.InputUserByAdmin;
@@ -7,7 +7,6 @@ import by.it_akademy.fitness.odto.OutputUserDTO;
 import by.it_akademy.fitness.security.filter.JwtUtil;
 import by.it_akademy.fitness.service.UserService;
 import by.it_akademy.fitness.storage.entity.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,11 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.UUID;
-
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 

@@ -24,7 +24,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-
 import javax.persistence.OptimisticLockException;
 import java.io.IOException;
 import java.time.Clock;
@@ -37,7 +36,7 @@ import static by.it_akademy.fitness.enams.EStatus.*;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class UserService implements IUserService, UserDetailsService{
+public class UserService implements IUserService, UserDetailsService {
 
 
     private final String CREATED = "The User was created";
@@ -67,8 +66,7 @@ public class UserService implements IUserService, UserDetailsService{
 
     private final UserMapper userMapper;
 
-    public User addUser(InputUserDTO user) {
-
+    public User addUser(InputUserDTO user)throws UsernameNotFoundException {
 
         User createdUser = UserBuilder   //create User from passed json
                 .create()
@@ -83,11 +81,8 @@ public class UserService implements IUserService, UserDetailsService{
                 .setActivationCode(UUID.randomUUID().toString())
                 .build();
 
-
         User userFromDb = userStorage.findByLogin(user.getMail()); //find user from DB
-        if (userFromDb != null) {
-            throw new IllegalArgumentException("The user with the same login already exist");
-        } User savedUser = userStorage.save(createdUser);
+        User savedUser = userStorage.save(createdUser);
 
         //TODO auditService.create(createdUser, EntityType.USER,ADDED_IN_DB,createdUser.getId().toString());
 
@@ -96,49 +91,36 @@ public class UserService implements IUserService, UserDetailsService{
             String message = ("Hello. Welcome to Fitness. " +
                     "Please go here to finish registration." +
                     "http://localhost:8080/activation/"
-                    +savedUser.getActivationCode()
-                    +"/mail/"
-                    +user.getMail());
+                    + savedUser.getActivationCode()
+                    + "/mail/"
+                    + user.getMail());
 
-        //TODO     mailSender.send(user.getMail(), "ActivationCode", message);
+            //TODO     mailSender.send(user.getMail(), "ActivationCode", message);
 
-             restTemplate.getForObject(
+            restTemplate.getForObject(
                     "http://localhost:8092/api/v1",
                     User.class
             );
         }
-
         return savedUser;
     }
 
-    public User activateUser(String code) throws IOException {
-
+    public User activateUser(String code) throws IOException, UsernameNotFoundException {
         User user = userStorage.findByActivationCode(code);
-
         if (user == null) {
             throw new IOException("We are apologize , try to registration again");
-        } user.setActivationCode(null);
+        }
+        user.setActivationCode(null);
         user.setStatus(EStatus.ACTIVE);
-
         // TODO auditService.create(user,EntityType.USER,ACTIVATED,user.getId().toString());
-
         return userStorage.save(user);
     }
 
 
-
     @Override
     public UserDetails loadUserByLogin(String login) throws UsernameNotFoundException {
-
         User user = userStorage.findByLogin(login);
-
-        if (user == null) {
-            log.error("User not found in the database");
-            throw new UsernameNotFoundException("User not found in the database");
-        } else {
-            log.info("User found in the database:{}", login);
-        }
-
+        log.error("User not found in the database");
         return user;
     }
 
@@ -157,24 +139,21 @@ public class UserService implements IUserService, UserDetailsService{
                 .setRole(dto.getRole())
                 .setStatus(dto.getStatus())
                 .build());
-
         //TODO auditService.create(user, EntityType.USER, CREATED, user.getId().toString());
-
         return user;
     }
 
     @Override
-    public OutputUserDTO readInput(UUID id) {
+    public OutputUserDTO readInput(UUID id) throws UsernameNotFoundException {
         User user = userStorage.findById(id).orElseThrow();
         return userMapper.onceMap(user);
     }
 
     @Override
-    public User read(UUID id) {
+    public User read(UUID id) throws UsernameNotFoundException {
         User user = userStorage.findById(id).orElseThrow();
         return user;
     }
-
 
     @Override
     public OutPage get(Pageable pageable) {
@@ -182,22 +161,20 @@ public class UserService implements IUserService, UserDetailsService{
         return userMapper.map(page);
     }
 
-
     @Override
     @Transactional
     public User update(UUID id,
                        Long dtUpdate,
                        InputUserByAdmin item,
-                       String header) throws LockException {
+                       String header) throws LockException, UsernameNotFoundException {
 
         validate(item);
-
         String login = extractCurrentToken(header);
         String mail = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = loadCurrentUserByLogin(mail);
         User readedUser = read(id);
 
-        if(readedUser.getLogin().equals(item.getMail())){
+        if (readedUser.getLogin().equals(item.getMail())) {
             throw new IllegalStateException(EXISTLOGIN);
         }
 
@@ -208,7 +185,6 @@ public class UserService implements IUserService, UserDetailsService{
         if (!readedUser.getDtUpdate().equals(dtUpdate)) {
             throw new OptimisticLockException(EDITED);
         }
-
 
 
         User updateUser = userStorage.save(UserBuilder
@@ -229,22 +205,23 @@ public class UserService implements IUserService, UserDetailsService{
     }
 
 
-
-    public void validate(InputUserByAdmin dto){
-        if(!dto.getRole().equals("ROLE_USER") && !dto.getRole().equals("ROLE_ADMIN")){
-            throw new IllegalStateException("You need pass role properly");}
-        if(!dto.getStatus().equals(ACTIVE) && !dto.getStatus().equals(WAITING_ACTIVATION) && !dto.getStatus().equals(DEACTIVATED)){
-            throw new IllegalStateException("You need pass Status properly");}
+    public void validate(InputUserByAdmin dto) {
+        if (!dto.getRole().equals("ROLE_USER") && !dto.getRole().equals("ROLE_ADMIN")) {
+            throw new IllegalStateException("You need pass role properly");
+        }
+        if (!dto.getStatus().equals(ACTIVE) && !dto.getStatus().equals(WAITING_ACTIVATION) && !dto.getStatus().equals(DEACTIVATED)) {
+            throw new IllegalStateException("You need pass Status properly");
+        }
     }
 
     @Override
-    public OutputUserDTO getMyInfo(String header) {
+    public OutputUserDTO getMyInfo(String header) throws UsernameNotFoundException {
         String currentLogin = extractCurrentToken(header);
         User user = userStorage.findByLogin(currentLogin);
         return userMapper.onceMap(user);
     }
 
-    public String extractCurrentToken(String authHeader) {
+    public String extractCurrentToken(String authHeader) throws UsernameNotFoundException {
         String jwtToken = authHeader.substring(7);
         String email = jwtUtil.extractUsername(jwtToken);
         UserDetails currentUser = loadUserByLogin(email);
@@ -252,7 +229,7 @@ public class UserService implements IUserService, UserDetailsService{
         return currentLogin;
     }
 
-    public UUID extractCurrentUUID(String authHeader) {
+    public UUID extractCurrentUUID(String authHeader) throws UsernameNotFoundException {
         String jwtToken = authHeader.substring(7);
         String email = jwtUtil.extractUsername(jwtToken);
         UserDetails currentUserDetails = loadUserByLogin(email);
@@ -261,7 +238,7 @@ public class UserService implements IUserService, UserDetailsService{
         return currentUser.getId();
     }
 
-    public User extractCurrentUserProfile(String authHeader) {
+    public User extractCurrentUserProfile(String authHeader) throws UsernameNotFoundException {
         String jwtToken = authHeader.substring(7);
         String email = jwtUtil.extractUsername(jwtToken);
         UserDetails currentUserDetails = loadUserByLogin(email);
@@ -271,10 +248,11 @@ public class UserService implements IUserService, UserDetailsService{
     }
 
     @Override
-    public User loadCurrentUserByLogin(String login) {
+    public User loadCurrentUserByLogin(String login) throws UsernameNotFoundException {
         User crntUser = userStorage.findByLogin(login);
         return crntUser;
     }
+
     @Override
     public User update(UUID id,
                        Long dtUpdate,
@@ -282,18 +260,21 @@ public class UserService implements IUserService, UserDetailsService{
                        String header) throws LockException {
         return null;
     }
+
     @Override
     public void delete(User user) {
     }
+
     @Override
     public User create(InputUserDTO dto, String header) {
         return null;
     }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails user = restTemplate.getForObject(
-                "http://localhost:8081/api/v1/fraud-check/{customerId}",
-                org.springframework.security.core.userdetails.User.class);
-        return user;
+        //                restTemplate.getForObject(
+//                "http://localhost:8081/api/v1/fraud-check/{customerId}",
+//                org.springframework.security.core.userdetails.User.class);
+        return userStorage.findByLogin(username);
     }
 }

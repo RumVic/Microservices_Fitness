@@ -1,4 +1,4 @@
-package by.it_akademy.fitness.controller;
+package by.it_akademy.fitness.controller.user;
 
 
 import lombok.RequiredArgsConstructor;

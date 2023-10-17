@@ -10,6 +10,8 @@ import by.it_akademy.fitness.security.filter.JwtUtil;
 import by.it_akademy.fitness.service.api.IProductService;
 import by.it_akademy.fitness.storage.api.IProductStorage;
 import by.it_akademy.fitness.storage.entity.Product;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -19,8 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.OptimisticLockException;
@@ -184,16 +184,28 @@ public class ProductService implements IProductService {
     }
     public void sendEventRequest(String description){
 
-        String url = "http://localhost:8090/api/v1/event";//http://localhost:8090/api/v1/audit/event
-
-        //http://localhost:8090/api/v1/event?description=checkDercrpt
+        String url = "http://localhost:8090/api/v1/event";
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("description", description);
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode body = objectMapper.createObjectNode();
+        // Add key-value pairs to the JSON object
 
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
+        body.put("entityType", "PRODUCT");
+        body.put("description", description);
+        body.put("userId", "12345678");
+        body.put("entityId","12345567");
+
+//        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+//        body.add("entityType","PRODUCT");
+//        body.add("description", description);
+//        body.add("userId","12345678");
+//        body.add("entityId","12345567");
+
+
+
+        HttpEntity<ObjectNode> requestEntity = new HttpEntity<>(body, headers);
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {

@@ -27,7 +27,7 @@ public class AuditService implements IAuditService {
     @Override
     @Transactional
     public Audit create(String userId,
-                        EntityType entityType,
+                        String entityType,
                         String text,
                         String idEntity) {
 

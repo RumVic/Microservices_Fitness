@@ -17,7 +17,8 @@ public class InputUserByAdmin {
 
     @NotBlank
     @Pattern(regexp = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$",
-            message = "Email invalid") private String mail;
+            message = "Email invalid")
+    private String mail;
     @NotNull
     private String nick;
     @NotNull

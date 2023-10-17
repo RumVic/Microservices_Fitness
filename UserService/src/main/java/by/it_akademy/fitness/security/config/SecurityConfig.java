@@ -3,6 +3,8 @@ package by.it_akademy.fitness.security.config;
 import by.it_akademy.fitness.security.costom.JwtAccessDeniedHandler;
 import by.it_akademy.fitness.security.costom.JwtAuthenticationEntryPoint;
 import by.it_akademy.fitness.security.filter.JwtAuthFilter;
+import by.it_akademy.fitness.storage.api.IUserStorage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,9 +13,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,16 +22,17 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @EnableWebSecurity
 public class SecurityConfig {
 
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter,
-                          // TODO IUserStorage userStorage,
+                          IUserStorage userStorage,
                           JwtAuthenticationEntryPoint authEntryPoint,
                           RestTemplate restTemplate, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
         this.jwtAuthFilter = jwtAuthFilter;
-        // TODO this.userStorage = userStorage;
+        this.userStorage = userStorage;
         this.authEntryPoint = authEntryPoint;
         this.restTemplate = restTemplate;
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
@@ -41,7 +42,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
 
-    // TODO private final IUserStorage userStorage;
+    private final IUserStorage userStorage;
 
 
     private final JwtAuthenticationEntryPoint authEntryPoint;
@@ -99,7 +100,6 @@ public class SecurityConfig {
         //because (in jwtAuthFilter we are checking the JWT and if everything is fine what we do - we
         //set, or we update the context of the security context holder,so we want to execute
         //jwtAuthFilter before UsernamePasswordAuthenticationFilter
-
         return (SecurityFilterChain) http.build();
     }
 
@@ -126,10 +126,11 @@ public class SecurityConfig {
 
 
     @Bean
-    public UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService() throws UsernameNotFoundException {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+                UserDetails user = null;
                 //In this method (loadUserByUsername) we load user by userName
                 //the one that we will use the JWT authentication filter
                 //in this case we are not fetching user from database
@@ -142,10 +143,14 @@ public class SecurityConfig {
 //              TODO           FraudCheckResponse.class,
 //              TODO           customer.getId()
 //              TODO   );
-
-                UserDetails user = restTemplate.getForObject(
+                try {
+                    user = userStorage.findByLogin(login);  /*restTemplate.getForObject(
+                }
                         "http://localhost:8081/api/v1/fraud-check/{customerId}",
-                        User.class);
+                        User.class);*/
+                }catch (UsernameNotFoundException e){
+                    log.info(e.toString());
+                }
                 return user;
             }
         };

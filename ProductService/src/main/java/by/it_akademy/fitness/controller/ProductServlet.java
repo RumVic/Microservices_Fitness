@@ -34,7 +34,7 @@ public class ProductServlet {
 
 
     @PostMapping
-    protected ResponseEntity<String> post(@RequestBody @Valid InputProductDTO idto, HttpServletRequest request) {
+    protected ResponseEntity<String> createProduct(@RequestBody @Valid InputProductDTO idto, HttpServletRequest request) {
         final String authHeader = request.getHeader(AUTHORIZATION);
         Product created = this.service.create(idto, authHeader);
         return new ResponseEntity<>(CREATED, HttpStatus.CREATED);

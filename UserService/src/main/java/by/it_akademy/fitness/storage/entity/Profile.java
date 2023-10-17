@@ -32,5 +32,4 @@ public class Profile {
     @Enumerated(value = EnumType.STRING)
     private ELifestyle lifestyle;
     private double targetWeight;
-
 }

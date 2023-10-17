@@ -1,4 +1,4 @@
-package by.it_akademy.fitness.controller;
+package by.it_akademy.fitness.controller.user;
 
 import by.it_akademy.fitness.idto.InputProfileDTO;
 import by.it_akademy.fitness.odto.OutputProfileDTO;
@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 

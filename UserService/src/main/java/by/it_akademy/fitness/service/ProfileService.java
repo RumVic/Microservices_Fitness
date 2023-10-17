@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,27 +34,27 @@ public class ProfileService implements IProfileService {
 
     private final String CREATED = "New user's profile was created";
 
-
     @Autowired
     private final IProfileStorage storage;
     @Autowired
     private final IUserService userService;
 
-     // TODO private final IAuditService auditService;
+    // TODO private final IAuditService auditService;
 
     private final ProfileMapper profileMapper;
 
 
     @Override
     @Transactional
-    public Profile create(InputProfileDTO dto, String header) {
+    public Profile create(InputProfileDTO dto, String header) throws UsernameNotFoundException {
 
         validate(dto);
 
         User currentUserProfile = userService.extractCurrentUserProfile(header);
 
         String mail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.loadCurrentUserByLogin(mail);
+
+        //UserDetails user = userService.loadCurrentUserByLogin(mail);
 
 
         Profile profile = storage.save(ProfileBuilder
@@ -83,13 +84,13 @@ public class ProfileService implements IProfileService {
     }
 
     @Override
-    public OutputProfileDTO readById(UUID id) {
+    public OutputProfileDTO readById(UUID id) throws UsernameNotFoundException {
         Profile profile = storage.findById(id).orElseThrow();
         return profileMapper.map(profile);
     }
 
     @Override
-    public Profile read(UUID id) {
+    public Profile read(UUID id) throws UsernameNotFoundException {
         return storage.findById(id).orElseThrow();
     }
 

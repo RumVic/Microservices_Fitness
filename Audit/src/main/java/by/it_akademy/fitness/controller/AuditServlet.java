@@ -1,6 +1,5 @@
 package by.it_akademy.fitness.controller;
 
-import by.it_akademy.fitness.enams.EntityType;
 import by.it_akademy.fitness.idto.InputDTO;
 import by.it_akademy.fitness.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputAuditDTO;
@@ -11,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -29,7 +30,7 @@ public class AuditServlet {
 //        return new ResponseEntity<>(service.getById(uuid), HttpStatus.OK);
 //    }
     @PostMapping("/event")
-    public ResponseEntity<String> putEvent(@RequestBody InputDTO description){
+    public ResponseEntity<String> putEvent(@RequestBody @Valid InputDTO description){
         service.create(description.getUserId()
                 ,description.getEntityType()
                 ,description.getDescription()

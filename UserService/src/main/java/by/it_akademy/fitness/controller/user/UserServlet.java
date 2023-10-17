@@ -1,4 +1,4 @@
-package by.it_akademy.fitness.controller;
+package by.it_akademy.fitness.controller.user;
 
 import by.it_akademy.fitness.idto.InputUserDTO;
 import by.it_akademy.fitness.odto.OutputUserDTO;
@@ -12,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -30,11 +29,10 @@ public class UserServlet {
     @Autowired
     private final JwtUtil jwtUtil;
 
-    @Autowired
     //TODO private final MailService mailService;
 
     @PostMapping("/registration")
-    public ResponseEntity<String> mailRegistration(@RequestBody @Valid  InputUserDTO inputUserDTO) {
+    public ResponseEntity<String> mailRegistration(@RequestBody @Valid InputUserDTO inputUserDTO) {
         //TODO mailService.addUser(inputUserDTO);
         return new ResponseEntity<>(CREATED, HttpStatus.OK);
     }
@@ -43,7 +41,7 @@ public class UserServlet {
     public ResponseEntity<String> loginIn(@RequestBody InputUserDTO request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getMail(), request.getPassword()));
-        final UserDetails userDetails = service.loadUserByLogin(request.getMail());
+        UserDetails userDetails = service.loadUserByLogin(request.getMail());
         if (userDetails != null) {
             return ResponseEntity.ok(jwtUtil.generateToken(userDetails, request.getMail()));
         }

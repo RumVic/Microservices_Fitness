@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Service
 public interface IAuditService {
-    Audit create(String user, EntityType entityType, String text, String idEntity);
+    Audit create(String user, String entityType, String text, String idEntity);
     OutPage<OutputAuditDTO> get(Pageable pag);
     Audit read (UUID uuid);
     List<OutputAuditDTO> getById(String uuid);
