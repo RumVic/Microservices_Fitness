@@ -12,6 +12,7 @@ import by.it_akademy.fitness.storage.api.IProductStorage;
 import by.it_akademy.fitness.storage.entity.Product;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -39,6 +40,7 @@ public class ProductService implements IProductService {
     private final String LOCK = "Editing forbidden";
 
     private final IProductStorage storage;
+    private final AmqpTemplate template;
 
     private final JwtUtil jwtUtil;
     private final ProductMapper productMapper;
@@ -47,10 +49,11 @@ public class ProductService implements IProductService {
 
     public ProductService(IProductStorage storage,
                           // TODO IUserService userService,
-                          JwtUtil jwtUtil,
+                          AmqpTemplate template, JwtUtil jwtUtil,
                           //TODO IAuditService auditService,
                           ProductMapper productMapper, RestTemplate restTemplate) {
         this.storage = storage;
+        this.template = template;
         // TODO this.userService = userService;
         this.jwtUtil = jwtUtil;
         // TODO this.auditService = auditService;
@@ -99,7 +102,9 @@ public class ProductService implements IProductService {
     }
 
     public Product read(UUID uuid) {
-        return storage.findById(uuid).orElseThrow();
+        Product readedProduct = storage.findById(uuid).orElseThrow();
+        template.convertAndSend("product_audit",readedProduct);//"Message to queue"
+        return readedProduct;
     }
 
     @Override

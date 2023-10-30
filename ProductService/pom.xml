@@ -39,6 +39,11 @@
             <artifactId>hibernate-validator</artifactId>
             <version> 6.2.5.Final</version>
         </dependency>
+        <dependency>
+            <groupId>by.it_akademy</groupId>
+            <artifactId>RabbitMQ</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
 <!--  Used this plugin for performing command "mvn flyway:repair" -->

@@ -6,6 +6,7 @@ import by.it_akademy.fitness.odto.OutPage;
 import by.it_akademy.fitness.security.filter.JwtUtil;
 import by.it_akademy.fitness.service.api.IProductService;
 import by.it_akademy.fitness.storage.entity.Product;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -32,14 +33,6 @@ public class ProductServlet {
 
     private final String UPDATED = "The Product was successfully updated ";
 
-
-    @PostMapping
-    protected ResponseEntity<String> createProduct(@RequestBody @Valid InputProductDTO idto, HttpServletRequest request) {
-        final String authHeader = request.getHeader(AUTHORIZATION);
-        Product created = this.service.create(idto, authHeader);
-        return new ResponseEntity<>(CREATED, HttpStatus.CREATED);
-    }
-
     @GetMapping()
     protected ResponseEntity<OutPage> getList(
             @RequestParam int page,
@@ -47,6 +40,15 @@ public class ProductServlet {
         Pageable pageable = PageRequest.of(page, size);
         OutPage products = service.get(pageable);
         return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    //TODO : authorization part of this
+    // methods are transferred to the UserService
+    @PostMapping
+    protected ResponseEntity<String> createProduct(@RequestBody @Valid InputProductDTO idto, HttpServletRequest request) {
+        final String authHeader = request.getHeader(AUTHORIZATION);
+        Product created = this.service.create(idto, authHeader);
+        return new ResponseEntity<>(CREATED, HttpStatus.CREATED);
     }
 
     @PutMapping("/{uuid}/dt_update/{dt_update}")

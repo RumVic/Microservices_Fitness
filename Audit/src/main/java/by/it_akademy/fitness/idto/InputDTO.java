@@ -1,7 +1,7 @@
 package by.it_akademy.fitness.idto;
 
-import by.it_akademy.fitness.enams.EntityType;
 import lombok.*;
+
 import javax.validation.constraints.NotNull;
 
 
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class InputDTO {
+public class InputDTO implements IDto {
     @NotNull
     private String entityType;
     @NotNull
@@ -20,5 +20,10 @@ public class InputDTO {
     private String userId;
     @NotNull
     private String entityId;
+
+    @Override
+    public InputDTO getter() {
+        return this;
+    }
 }
 

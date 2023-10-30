@@ -31,10 +31,7 @@ public class AuditServlet {
 //    }
     @PostMapping("/event")
     public ResponseEntity<String> putEvent(@RequestBody @Valid InputDTO description){
-        service.create(description.getUserId()
-                ,description.getEntityType()
-                ,description.getDescription()
-                ,description.getEntityId());
+        service.create(description);
         return new ResponseEntity<>( HttpStatus.OK);
     }
 }

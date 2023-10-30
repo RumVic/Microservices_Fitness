@@ -1,7 +1,8 @@
 package by.it_akademy.fitness.service;
 
 import by.it_akademy.fitness.builder.AuditBuilder;
-import by.it_akademy.fitness.enams.EntityType;
+import by.it_akademy.fitness.idto.IDto;
+import by.it_akademy.fitness.idto.InputDTO;
 import by.it_akademy.fitness.mapper.AuditMapper;
 import by.it_akademy.fitness.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputAuditDTO;
@@ -24,25 +25,24 @@ import java.util.UUID;
 public class AuditService implements IAuditService {
     private final IAuditStorage storage;
     private final AuditMapper auditMapper;
+
+
     @Override
     @Transactional
-    public Audit create(String userId,
-                        String entityType,
-                        String text,
-                        String idEntity) {
-
+    public Audit create(IDto iDto) {
         return storage.save(
                 AuditBuilder
                         .create()
                         .setId(UUID.randomUUID())
                         .setDtCreate(Clock.systemUTC().millis())
                         .setDtUpdate(Clock.systemUTC().millis())
-                        .setText(text)
-                        .setType(entityType)
-                        .setUid(idEntity)
-                        .setUser(userId)
+                        .setText(iDto.getter().getDescription())
+                        .setType(iDto.getter().getEntityType())
+                        .setUid(iDto.getter().getUserId())
+                        .setUser(iDto.getter().getUserId())
                         .build());
     }
+
     public OutPage<OutputAuditDTO> get(Pageable pag) {
         Page<Audit> auditPage = storage.findAll(pag);
         return auditMapper.map(auditPage);

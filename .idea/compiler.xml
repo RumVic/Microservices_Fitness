@@ -7,18 +7,24 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="RabbitMQ" />
         <module name="Audit" />
         <module name="MailService" />
         <module name="UserService" />
         <module name="ProductService" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="RabbirMQ" target="20" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Audit" options="-parameters" />
       <module name="MailService" options="-parameters" />
       <module name="ProductService" options="-parameters" />
+      <module name="RabbirMQ" options="-parameters" />
+      <module name="RabbitMQ" options="-parameters" />
       <module name="UserService" options="-parameters" />
     </option>
   </component>
