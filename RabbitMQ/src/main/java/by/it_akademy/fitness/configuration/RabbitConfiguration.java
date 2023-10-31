@@ -8,6 +8,7 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Bean;
 
+
 public class RabbitConfiguration {
     Logger logger = Logger.getLogger(RabbitConfiguration.class);
 
