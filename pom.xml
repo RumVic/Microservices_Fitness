@@ -8,8 +8,8 @@
 		<module>UserService</module>
         <module>MailService</module>
         <module>Audit</module>
-        <module>RabbitMQ</module>
-    </modules>
+		<module>RabbitMQ</module>
+	</modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
