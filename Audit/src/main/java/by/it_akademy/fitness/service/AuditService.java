@@ -2,9 +2,8 @@ package by.it_akademy.fitness.service;
 
 import by.it_akademy.fitness.builder.AuditBuilder;
 import by.it_akademy.fitness.idto.IDto;
-import by.it_akademy.fitness.idto.InputDTO;
 import by.it_akademy.fitness.mapper.AuditMapper;
-import by.it_akademy.fitness.odto.OutPage;
+import by.it_akademy.fitness.security_module.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputAuditDTO;
 import by.it_akademy.fitness.service.api.IAuditService;
 import by.it_akademy.fitness.storage.api.IAuditStorage;

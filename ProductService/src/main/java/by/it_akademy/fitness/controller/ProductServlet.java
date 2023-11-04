@@ -1,12 +1,11 @@
 package by.it_akademy.fitness.controller;
 
-import by.it_akademy.fitness.exception.LockException;
 import by.it_akademy.fitness.idto.InputProductDTO;
-import by.it_akademy.fitness.odto.OutPage;
-import by.it_akademy.fitness.security.filter.JwtUtil;
+import by.it_akademy.fitness.security_module.odto.OutPage;
 import by.it_akademy.fitness.service.api.IProductService;
 import by.it_akademy.fitness.storage.entity.Product;
-import org.springframework.amqp.core.AmqpTemplate;
+import by.it_akademy.fitness.security_module.configuration.filter.JwtUtil;
+import by.it_akademy.fitness.security_module.exceptionEdvice.LockException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

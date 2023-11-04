@@ -1,14 +1,14 @@
 package by.it_akademy.fitness.service;
 
 import by.it_akademy.fitness.builder.CompositionDishBuilder;
-import by.it_akademy.fitness.exception.LockException;
 import by.it_akademy.fitness.idto.InputComDishDTO;
-import by.it_akademy.fitness.odto.OutPage;
+import by.it_akademy.fitness.security_module.odto.OutPage;
 import by.it_akademy.fitness.service.api.ICompositionDishService;
 import by.it_akademy.fitness.service.api.IProductService;
 import by.it_akademy.fitness.storage.api.ICompositionDishStorage;
 import by.it_akademy.fitness.storage.entity.CompositionDish;
 import by.it_akademy.fitness.storage.entity.Product;
+import by.it_akademy.fitness.security_module.exceptionEdvice.LockException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

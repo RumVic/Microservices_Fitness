@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 //(scanBasePackages = "builder, controller, enams, mapper, odto, service, storage.api, storage.entity")
 @SpringBootApplication
-@ComponentScan(basePackages = "by.it_akademy.fitness" )
+@ComponentScan(basePackages = {"by.it_akademy.fitness","security.src.main.java.configuration.filter"})
 //was caused of  access problem.
-// codnt  find my endpoint of controller because veseable problem
+// couldn't  find my endpoint of controller because veseable problem
 // org.springframework.web.servlet.handler looking for endpoint in resources
 // call ResourceHttpRequestHandler
 //org.springframework.web.servlet.DispatcherServlet : Completed 404 NOT_FOUND

@@ -1,17 +1,17 @@
 package by.it_akademy.fitness.service.api;
 
-import by.it_akademy.fitness.exception.LockException;
 import by.it_akademy.fitness.idto.InputUserByAdmin;
 import by.it_akademy.fitness.idto.InputUserDTO;
 import by.it_akademy.fitness.odto.OutputUserDTO;
 import by.it_akademy.fitness.storage.entity.User;
+import by.it_akademy.fitness.security_module.exceptionEdvice.LockException;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.UUID;
 
 public interface IUserService extends IService<User, InputUserDTO, OutputUserDTO> {
 
-    UserDetails createNewUser(InputUserByAdmin dto);
+    User createNewUser(InputUserByAdmin dto);
 
     UserDetails loadUserByLogin(String login);
 

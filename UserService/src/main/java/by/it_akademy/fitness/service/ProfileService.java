@@ -3,10 +3,9 @@ package by.it_akademy.fitness.service;
 import by.it_akademy.fitness.buider.ProfileBuilder;
 import by.it_akademy.fitness.enams.EGender;
 import by.it_akademy.fitness.enams.ELifestyle;
-import by.it_akademy.fitness.exception.LockException;
 import by.it_akademy.fitness.idto.InputProfileDTO;
 import by.it_akademy.fitness.mappers.ProfileMapper;
-import by.it_akademy.fitness.odto.OutPage;
+import by.it_akademy.fitness.security_module.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputProfileDTO;
 import by.it_akademy.fitness.service.api.IProfileService;
 import by.it_akademy.fitness.service.api.IUserService;
@@ -101,7 +100,7 @@ public class ProfileService implements IProfileService {
 
     @Override
     @Transactional
-    public Profile update(UUID id, Long dtUpdate, InputProfileDTO item, String header) throws LockException {
+    public Profile update(UUID id, Long dtUpdate, InputProfileDTO item, String header) {
         return null;
     }
 

@@ -1,6 +1,6 @@
 //package mapper;
 //
-//import odto.OutPage;
+//import odto.by.it_akademy.fitness.OutPage;
 //import odto.OutputUserDTO;
 //import org.springframework.data.domain.Page;
 //import org.springframework.stereotype.Component;

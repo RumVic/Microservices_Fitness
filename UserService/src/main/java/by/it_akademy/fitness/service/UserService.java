@@ -2,28 +2,29 @@ package by.it_akademy.fitness.service;
 
 import by.it_akademy.fitness.buider.UserBuilder;
 import by.it_akademy.fitness.enams.EStatus;
-import by.it_akademy.fitness.exception.LockException;
 import by.it_akademy.fitness.idto.InputUserByAdmin;
 import by.it_akademy.fitness.idto.InputUserDTO;
 import by.it_akademy.fitness.mappers.UserMapper;
-import by.it_akademy.fitness.odto.OutPage;
+import by.it_akademy.fitness.security_module.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputUserDTO;
-import by.it_akademy.fitness.security.filter.JwtUtil;
 import by.it_akademy.fitness.service.api.IUserService;
 import by.it_akademy.fitness.storage.api.IUserStorage;
 import by.it_akademy.fitness.storage.entity.User;
-import lombok.RequiredArgsConstructor;
+import by.it_akademy.fitness.security_module.configuration.filter.JwtUtil;
+import by.it_akademy.fitness.security_module.exceptionEdvice.LockException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import by.it_akademy.fitness.security_module.storage.api.IUserSecurityStorage;
+
 import javax.persistence.OptimisticLockException;
 import java.io.IOException;
 import java.time.Clock;
@@ -35,8 +36,7 @@ import static by.it_akademy.fitness.enams.EStatus.*;
 @Slf4j
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
-public class UserService implements IUserService, UserDetailsService {
+public class UserService implements IUserService {
 
 
     private final String CREATED = "The User was created";
@@ -53,8 +53,24 @@ public class UserService implements IUserService, UserDetailsService {
 
     private final String ACTIVATED = "The User was successfully activated";
 
+    @Autowired
+    public UserService(BCryptPasswordEncoder passwordEncoder,
+                       IUserSecurityStorage userSecurityStorage,
+                       JwtUtil jwtUtil,
+                       RestTemplate restTemplate,
+                       IUserStorage userStorage,
+                       UserMapper userMapper) {
+        this.passwordEncoder = passwordEncoder;
+        this.userSecurityStorage = userSecurityStorage;
+        this.jwtUtil = jwtUtil;
+        this.restTemplate = restTemplate;
+        this.userStorage = userStorage;
+        this.userMapper = userMapper;
+    }
 
     private final BCryptPasswordEncoder passwordEncoder;
+
+    private final IUserSecurityStorage userSecurityStorage;
 
     private final JwtUtil jwtUtil;
 
@@ -66,7 +82,7 @@ public class UserService implements IUserService, UserDetailsService {
 
     private final UserMapper userMapper;
 
-    public User addUser(InputUserDTO user)throws UsernameNotFoundException {
+    public User addUser(InputUserDTO user) throws UsernameNotFoundException {
 
         User createdUser = UserBuilder   //create User from passed json
                 .create()
@@ -119,14 +135,14 @@ public class UserService implements IUserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByLogin(String login) throws UsernameNotFoundException {
-        User user = userStorage.findByLogin(login);
+        UserDetails userDetails = userSecurityStorage.findByLogin(login);
         log.error("User not found in the database");
-        return user;
+        return userDetails;
     }
 
     @Override
     @Transactional
-    public UserDetails createNewUser(InputUserByAdmin dto) {
+    public User createNewUser(InputUserByAdmin dto) {
         validate(dto);
         User user = userStorage.save(UserBuilder
                 .create()
@@ -257,7 +273,7 @@ public class UserService implements IUserService, UserDetailsService {
     public User update(UUID id,
                        Long dtUpdate,
                        InputUserDTO item,
-                       String header) throws LockException {
+                       String header) {
         return null;
     }
 
@@ -268,13 +284,5 @@ public class UserService implements IUserService, UserDetailsService {
     @Override
     public User create(InputUserDTO dto, String header) {
         return null;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //                restTemplate.getForObject(
-//                "http://localhost:8081/api/v1/fraud-check/{customerId}",
-//                org.springframework.security.core.userdetails.User.class);
-        return userStorage.findByLogin(username);
     }
 }

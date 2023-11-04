@@ -1,6 +1,6 @@
 package by.it_akademy.fitness.mapper;
 
-import by.it_akademy.fitness.odto.OutPage;
+import by.it_akademy.fitness.security_module.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputAuditDTO;
 import by.it_akademy.fitness.storage.entity.Audit;
 import org.springframework.data.domain.Page;
