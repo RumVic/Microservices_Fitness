@@ -5,25 +5,22 @@ import by.it_akademy.fitness.enams.EStatus;
 import by.it_akademy.fitness.idto.InputUserByAdmin;
 import by.it_akademy.fitness.idto.InputUserDTO;
 import by.it_akademy.fitness.mappers.UserMapper;
-import by.it_akademy.fitness.security_module.odto.OutPage;
+import by.it_akademy.fitness.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputUserDTO;
+import by.it_akademy.fitness.security.configuration.filter.JwtUtil;
+import by.it_akademy.fitness.security.exceptionEdvice.LockException;
 import by.it_akademy.fitness.service.api.IUserService;
 import by.it_akademy.fitness.storage.api.IUserStorage;
 import by.it_akademy.fitness.storage.entity.User;
-import by.it_akademy.fitness.security_module.configuration.filter.JwtUtil;
-import by.it_akademy.fitness.security_module.exceptionEdvice.LockException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-import by.it_akademy.fitness.security_module.storage.api.IUserSecurityStorage;
 
 import javax.persistence.OptimisticLockException;
 import java.io.IOException;
@@ -55,26 +52,18 @@ public class UserService implements IUserService {
 
     @Autowired
     public UserService(BCryptPasswordEncoder passwordEncoder,
-                       IUserSecurityStorage userSecurityStorage,
                        JwtUtil jwtUtil,
-                       RestTemplate restTemplate,
                        IUserStorage userStorage,
                        UserMapper userMapper) {
         this.passwordEncoder = passwordEncoder;
-        this.userSecurityStorage = userSecurityStorage;
         this.jwtUtil = jwtUtil;
-        this.restTemplate = restTemplate;
         this.userStorage = userStorage;
         this.userMapper = userMapper;
     }
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-    private final IUserSecurityStorage userSecurityStorage;
-
     private final JwtUtil jwtUtil;
-
-    private final RestTemplate restTemplate;
 
     private final IUserStorage userStorage;
 
@@ -113,10 +102,10 @@ public class UserService implements IUserService {
 
             //TODO     mailSender.send(user.getMail(), "ActivationCode", message);
 
-            restTemplate.getForObject(
-                    "http://localhost:8092/api/v1",
-                    User.class
-            );
+//          TODO  restTemplate.getForObject(
+//                    "http://localhost:8092/api/v1",
+//                    User.class
+//            );
         }
         return savedUser;
     }
@@ -134,10 +123,10 @@ public class UserService implements IUserService {
 
 
     @Override
-    public UserDetails loadUserByLogin(String login) throws UsernameNotFoundException {
-        UserDetails userDetails = userSecurityStorage.findByLogin(login);
+    public User loadUserByLogin(String login) throws UsernameNotFoundException {
+        User user = userStorage.findByLogin(login);
         log.error("User not found in the database");
-        return userDetails;
+        return user;
     }
 
     @Override
@@ -240,7 +229,7 @@ public class UserService implements IUserService {
     public String extractCurrentToken(String authHeader) throws UsernameNotFoundException {
         String jwtToken = authHeader.substring(7);
         String email = jwtUtil.extractUsername(jwtToken);
-        UserDetails currentUser = loadUserByLogin(email);
+        User currentUser = loadUserByLogin(email);
         String currentLogin = currentUser.getUsername();
         return currentLogin;
     }
@@ -248,7 +237,7 @@ public class UserService implements IUserService {
     public UUID extractCurrentUUID(String authHeader) throws UsernameNotFoundException {
         String jwtToken = authHeader.substring(7);
         String email = jwtUtil.extractUsername(jwtToken);
-        UserDetails currentUserDetails = loadUserByLogin(email);
+        User currentUserDetails = loadUserByLogin(email);
         String currentLogin = currentUserDetails.getUsername();
         User currentUser = userStorage.findByLogin(currentLogin);
         return currentUser.getId();
@@ -257,7 +246,7 @@ public class UserService implements IUserService {
     public User extractCurrentUserProfile(String authHeader) throws UsernameNotFoundException {
         String jwtToken = authHeader.substring(7);
         String email = jwtUtil.extractUsername(jwtToken);
-        UserDetails currentUserDetails = loadUserByLogin(email);
+        User currentUserDetails = loadUserByLogin(email);
         String currentLogin = currentUserDetails.getUsername();
         User currentUser = userStorage.findByLogin(currentLogin);
         return currentUser;

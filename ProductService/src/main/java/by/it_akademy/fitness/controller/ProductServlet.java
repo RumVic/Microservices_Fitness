@@ -1,11 +1,10 @@
 package by.it_akademy.fitness.controller;
 
+import by.it_akademy.fitness.exception.LockException;
 import by.it_akademy.fitness.idto.InputProductDTO;
-import by.it_akademy.fitness.security_module.odto.OutPage;
+import by.it_akademy.fitness.odto.OutPage;
 import by.it_akademy.fitness.service.api.IProductService;
 import by.it_akademy.fitness.storage.entity.Product;
-import by.it_akademy.fitness.security_module.configuration.filter.JwtUtil;
-import by.it_akademy.fitness.security_module.exceptionEdvice.LockException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,14 +18,13 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RestController
 @RequestMapping("/api/v1/product")
 public class ProductServlet {
-    public ProductServlet(IProductService service, JwtUtil jwtUtil) {
+    public ProductServlet(IProductService service) {
         this.service = service;
-        this.jwtUtil = jwtUtil;
     }
 
     private final IProductService service;
 
-    private final JwtUtil jwtUtil;
+    //private final JwtUtil jwtUtil;
 
     private final String CREATED = "The Product was successfully added to library";
 

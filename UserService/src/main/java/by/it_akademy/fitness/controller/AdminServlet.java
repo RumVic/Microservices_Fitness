@@ -2,12 +2,12 @@ package by.it_akademy.fitness.controller;
 
 
 import by.it_akademy.fitness.idto.InputUserByAdmin;
-import by.it_akademy.fitness.security_module.odto.OutPage;
+import by.it_akademy.fitness.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputUserDTO;
+import by.it_akademy.fitness.security.configuration.filter.JwtUtil;
+import by.it_akademy.fitness.security.exceptionEdvice.LockException;
 import by.it_akademy.fitness.service.UserService;
 import by.it_akademy.fitness.storage.entity.User;
-import by.it_akademy.fitness.security_module.configuration.filter.JwtUtil;
-import by.it_akademy.fitness.security_module.exceptionEdvice.LockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

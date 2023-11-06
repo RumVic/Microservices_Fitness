@@ -2,15 +2,16 @@ package by.it_akademy.fitness.controller;
 
 import by.it_akademy.fitness.idto.InputUserDTO;
 import by.it_akademy.fitness.odto.OutputUserDTO;
+import by.it_akademy.fitness.security.configuration.config.CustomUserDetails;
+import by.it_akademy.fitness.security.configuration.config.SecurityConfig;
+import by.it_akademy.fitness.security.configuration.filter.JwtUtil;
 import by.it_akademy.fitness.service.UserService;
-import by.it_akademy.fitness.security_module.configuration.config.SecurityConfig;
-import by.it_akademy.fitness.security_module.configuration.filter.JwtUtil;
+import by.it_akademy.fitness.storage.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -48,9 +49,9 @@ public class UserServlet {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getMail(), request.getPassword()));
 
-        UserDetails userDetails = service.loadUserByLogin(request.getMail());
-        if (userDetails != null) {
-            return ResponseEntity.ok(jwtUtil.generateToken(userDetails, request.getMail()));
+        User user = service.loadUserByLogin(request.getMail());
+        if (user != null) {
+            return ResponseEntity.ok(jwtUtil.generateToken(new CustomUserDetails(user), request.getMail()));
         }
         return ResponseEntity.status(400).body("Some error has occurred");
     }

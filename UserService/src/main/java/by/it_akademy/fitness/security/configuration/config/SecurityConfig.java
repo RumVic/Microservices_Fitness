@@ -2,9 +2,8 @@ package by.it_akademy.fitness.security.configuration.config;
 
 
 import by.it_akademy.fitness.security.configuration.filter.JwtAuthFilter;
-import by.it_akademy.fitness.security.configuration.costom.JwtAccessDeniedHandler;
-import by.it_akademy.fitness.security.configuration.costom.JwtAuthenticationEntryPoint;
-import by.it_akademy.fitness.security.storage.api.IUserSecurityStorage;
+import by.it_akademy.fitness.security.configuration.custom.JwtAccessDeniedHandler;
+import by.it_akademy.fitness.security.configuration.custom.JwtAuthenticationEntryPoint;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -15,14 +14,10 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @EnableWebSecurity
@@ -31,30 +26,18 @@ public class SecurityConfig {
 
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter,
-                          IUserSecurityStorage userStorage,
-                          JwtAuthenticationEntryPoint authEntryPoint,
-                          RestTemplate restTemplate, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
+                          UserDetailsServiceImpl userDetailsServiceImpl, JwtAuthenticationEntryPoint authEntryPoint,
+                          JwtAccessDeniedHandler jwtAccessDeniedHandler) {
         this.jwtAuthFilter = jwtAuthFilter;
-        this.userStorage = userStorage;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.authEntryPoint = authEntryPoint;
-        this.restTemplate = restTemplate;
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
     }
-
     String login = "login";
-
     private final JwtAuthFilter jwtAuthFilter;
-
-    private final IUserSecurityStorage userStorage;
-
-
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final JwtAuthenticationEntryPoint authEntryPoint;
-
-    private final RestTemplate restTemplate;
-
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -110,7 +93,7 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         //this method that we want spring to use instead
         final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService());
+        authenticationProvider.setUserDetailsService(userDetailsServiceImpl.userDetailsService());
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
@@ -125,30 +108,5 @@ public class SecurityConfig {
         //return null;
         //return NoOpPasswordEncoder.getInstance();
         return new BCryptPasswordEncoder();
-    }
-
-
-    //@Bean
-    public UserDetailsService userDetailsService() throws UsernameNotFoundException {
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-                UserDetails user = null;
-                //In this method (loadUserByUsername) we load user by userName
-                //the one that we will use the JWT authentication filter
-                //in this case we are not fetching user from database
-                //we use a static list
-                /**/
-                //return userDao.findByUsername(email);
-
-//              TODO   FraudCheckResponse fraudCheckResponse = restTemplate.getForObject(
-//              TODO           "http://localhost:8081/api/v1/fraud-check/{customerId}",
-//              TODO           FraudCheckResponse.class,
-//              TODO           customer.getId()
-//              TODO   );
-                UserDetails userDetails = userStorage.findByLogin(login);
-                return userDetails;
-            }
-        };
     }
 }

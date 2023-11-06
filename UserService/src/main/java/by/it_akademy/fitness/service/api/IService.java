@@ -1,8 +1,9 @@
 package by.it_akademy.fitness.service.api;
 
 
-import by.it_akademy.fitness.security_module.odto.OutPage;
-import by.it_akademy.fitness.security_module.exceptionEdvice.LockException;
+
+import by.it_akademy.fitness.odto.OutPage;
+import by.it_akademy.fitness.security.exceptionEdvice.LockException;
 import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;

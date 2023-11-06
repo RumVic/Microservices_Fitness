@@ -1,5 +1,6 @@
 package by.it_akademy.fitness.service.api;
 
+import by.it_akademy.fitness.exception.LockException;
 import by.it_akademy.fitness.idto.InputComDishDTO;
 import by.it_akademy.fitness.odto.OutputComDishDTO;
 import by.it_akademy.fitness.storage.entity.CompositionDish;
@@ -11,7 +12,7 @@ public interface ICompositionDishService extends IService <CompositionDish, Inpu
 
     List<CompositionDish> create(List<InputComDishDTO> dto, UUID idDish);
 
-    List<CompositionDish> update(List<InputComDishDTO> dto, UUID idDish);
+    List<CompositionDish> update(List<InputComDishDTO> dto, UUID idDish) throws LockException;
 
     void delete(List<CompositionDish> compositionDish);
 }

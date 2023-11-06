@@ -1,4 +1,4 @@
-package by.it_akademy.fitness.security_module.exceptionEdvice;
+package by.it_akademy.fitness.exception;
 
 public class LockException extends Exception {
 

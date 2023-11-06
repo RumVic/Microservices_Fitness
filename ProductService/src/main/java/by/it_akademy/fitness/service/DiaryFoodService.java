@@ -1,14 +1,18 @@
 package by.it_akademy.fitness.service;
 
 import by.it_akademy.fitness.builder.DiaryFoodBuilder;
+import by.it_akademy.fitness.exception.LockException;
 import by.it_akademy.fitness.idto.InputDiaryFoodDTO;
 import by.it_akademy.fitness.mappers.DiaryFoodMapper;
-import by.it_akademy.fitness.security_module.odto.OutPage;
+import by.it_akademy.fitness.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputDiaryFoodDTO;
-import by.it_akademy.fitness.service.api.*;
+import by.it_akademy.fitness.service.api.IDiaryFoodService;
+import by.it_akademy.fitness.service.api.IDishService;
+import by.it_akademy.fitness.service.api.IProductService;
 import by.it_akademy.fitness.storage.api.IDiaryFoodStorage;
-import by.it_akademy.fitness.storage.entity.*;
-import by.it_akademy.fitness.security_module.exceptionEdvice.LockException;
+import by.it_akademy.fitness.storage.entity.DiaryFood;
+import by.it_akademy.fitness.storage.entity.Dish;
+import by.it_akademy.fitness.storage.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -63,7 +67,7 @@ public class DiaryFoodService implements IDiaryFoodService {
 
     @Override
     @Transactional
-    public DiaryFood createWithParam(InputDiaryFoodDTO dto, String header, UUID uuid) throws LockException {
+    public DiaryFood createWithParam(InputDiaryFoodDTO dto, String header, UUID uuid) {
         validateDiary(dto);
 
         Dish readedDish = null;
@@ -138,7 +142,7 @@ public class DiaryFoodService implements IDiaryFoodService {
 
     @Override
     @Transactional
-    public DiaryFood update(UUID id, Long dtUpdate, InputDiaryFoodDTO item, String header) throws LockException {
+    public DiaryFood update(UUID id, Long dtUpdate, InputDiaryFoodDTO item, String header)throws LockException {
         return null;
     }
 

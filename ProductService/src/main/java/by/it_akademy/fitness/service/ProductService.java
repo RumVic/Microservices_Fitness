@@ -1,17 +1,16 @@
 package by.it_akademy.fitness.service;
 
 import by.it_akademy.fitness.builder.ProductBuilder;
+import by.it_akademy.fitness.exception.LockException;
 import by.it_akademy.fitness.idto.InputProductDTO;
 import by.it_akademy.fitness.mappers.ProductMapper;
-import by.it_akademy.fitness.security_module.odto.OutPage;
+import by.it_akademy.fitness.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputProductDTO;
 import by.it_akademy.fitness.service.api.IProductService;
 import by.it_akademy.fitness.storage.api.IProductStorage;
 import by.it_akademy.fitness.storage.entity.Product;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import by.it_akademy.fitness.security_module.configuration.filter.JwtUtil;
-import by.it_akademy.fitness.security_module.exceptionEdvice.LockException;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,20 +41,18 @@ public class ProductService implements IProductService {
     private final IProductStorage storage;
     private final AmqpTemplate template;
 
-    private final JwtUtil jwtUtil;
     private final ProductMapper productMapper;
 
     private final RestTemplate restTemplate;
 
     public ProductService(IProductStorage storage,
                           // TODO IUserService userService,
-                          AmqpTemplate template, JwtUtil jwtUtil,
+                          AmqpTemplate template,
                           //TODO IAuditService auditService,
                           ProductMapper productMapper, RestTemplate restTemplate) {
         this.storage = storage;
         this.template = template;
         // TODO this.userService = userService;
-        this.jwtUtil = jwtUtil;
         // TODO this.auditService = auditService;
         this.productMapper = productMapper;
         this.restTemplate = restTemplate;
@@ -118,7 +115,7 @@ public class ProductService implements IProductService {
 
     @Override
     @Transactional
-    public Product update(UUID id, Long dtUpdate, InputProductDTO idto, String header)throws LockException {
+    public Product update(UUID id, Long dtUpdate, InputProductDTO idto, String header) throws LockException {
 
         validate(idto);
         Product readed = storage.findById(id).orElseThrow();

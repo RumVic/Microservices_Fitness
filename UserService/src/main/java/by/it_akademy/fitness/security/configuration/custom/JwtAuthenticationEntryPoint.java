@@ -1,4 +1,4 @@
-package by.it_akademy.fitness.security.configuration.costom;
+package by.it_akademy.fitness.security.configuration.custom;
 
 
 

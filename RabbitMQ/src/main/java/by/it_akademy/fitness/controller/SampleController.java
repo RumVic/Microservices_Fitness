@@ -1,6 +1,5 @@
 package by.it_akademy.fitness.controller;
 
-import org.apache.log4j.Logger;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -1,8 +1,9 @@
 package by.it_akademy.fitness.security.configuration.filter;
 
 
-import by.it_akademy.fitness.security.configuration.costom.JwtAuthenticationException;
-import by.it_akademy.fitness.security.storage.api.IUserSecurityStorage;
+import by.it_akademy.fitness.security.configuration.config.UserDetailsServiceImpl;
+import by.it_akademy.fitness.security.configuration.custom.JwtAuthenticationException;
+import by.it_akademy.fitness.storage.api.IUserStorage;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,14 +25,14 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Slf4j
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
-    public  JwtAuthFilter(
-            JwtUtil jwtUtil,
-            IUserSecurityStorage userStorage) {
+    public  JwtAuthFilter(UserDetailsServiceImpl userDetailsServiceImpl, JwtUtil jwtUtil) {
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.jwtUtil = jwtUtil;
         this.userStorage = userStorage;
     }
+    private IUserStorage userStorage;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final JwtUtil jwtUtil;
-    private final IUserSecurityStorage userStorage;
 
     @Override
     protected void doFilterInternal(
@@ -56,12 +56,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         jwtToken = authHeader.substring(7);
             email = jwtUtil.extractUsername(jwtToken);
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails myUser = userStorage.findByLogin(email);
-//                restTemplate.getForObject(
-//                        "http://localhost:8081/api/v1/fraud-check/{customerId}",
-//                        User.class);//findByLogin(email);
+                UserDetails myUser = userDetailsServiceImpl.userDetailsService().loadUserByUsername(email);
                 if (jwtUtil.validateToken(jwtToken, myUser)) {
-
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(
                                     myUser,

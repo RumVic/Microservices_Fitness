@@ -2,7 +2,7 @@ package by.it_akademy.fitness.security.exceptionEdvice;
 
 
 import by.it_akademy.fitness.security.odto.OutputResponseError;
-import by.it_akademy.fitness.security.configuration.costom.JwtAuthenticationException;
+import by.it_akademy.fitness.security.configuration.custom.JwtAuthenticationException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

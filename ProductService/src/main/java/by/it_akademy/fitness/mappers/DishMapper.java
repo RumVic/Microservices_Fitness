@@ -1,6 +1,6 @@
 package by.it_akademy.fitness.mappers;
 
-import by.it_akademy.fitness.security_module.odto.OutPage;
+import by.it_akademy.fitness.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputComDishDTO;
 import by.it_akademy.fitness.odto.OutputDishDTO;
 import by.it_akademy.fitness.storage.entity.CompositionDish;

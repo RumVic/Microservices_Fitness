@@ -2,13 +2,8 @@ package by.it_akademy.fitness.storage.entity;
 
 import by.it_akademy.fitness.enams.EStatus;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -31,38 +26,9 @@ public class User {//implements UserDetails
     private String username;
     @Column(unique = true)
     private String login;
-    private String activationCode;//new
+    private String activationCode;
     private String password;
     private String role;
-    //private Collection<GrantedAuthority> role;
     @Enumerated(value = EnumType.STRING)
     private EStatus status;
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        List<GrantedAuthority> authorities = new ArrayList<>();
-//        authorities.add(new SimpleGrantedAuthority(role));
-//        return authorities;
-//
-//    }
-//
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return true;
-//    }
 }

@@ -1,14 +1,14 @@
 package by.it_akademy.fitness.service;
 
 import by.it_akademy.fitness.builder.CompositionDishBuilder;
+import by.it_akademy.fitness.exception.LockException;
 import by.it_akademy.fitness.idto.InputComDishDTO;
-import by.it_akademy.fitness.security_module.odto.OutPage;
+import by.it_akademy.fitness.odto.OutPage;
 import by.it_akademy.fitness.service.api.ICompositionDishService;
 import by.it_akademy.fitness.service.api.IProductService;
 import by.it_akademy.fitness.storage.api.ICompositionDishStorage;
 import by.it_akademy.fitness.storage.entity.CompositionDish;
 import by.it_akademy.fitness.storage.entity.Product;
-import by.it_akademy.fitness.security_module.exceptionEdvice.LockException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,7 +72,7 @@ public class CompositionDishService implements ICompositionDishService {
     }
 
     @Override
-    public List<CompositionDish> update(List<InputComDishDTO> item, UUID idDish) {
+    public List<CompositionDish> update(List<InputComDishDTO> item, UUID idDish) throws LockException {
 
         List<CompositionDish> list = new ArrayList<>();
 
@@ -97,7 +97,7 @@ public class CompositionDishService implements ICompositionDishService {
     }
 
     @Override
-    public CompositionDish update(UUID id, Long dtUpdate, InputComDishDTO item, String header) throws LockException {
+    public CompositionDish update(UUID id, Long dtUpdate, InputComDishDTO item, String header)  {
         return null;
     }
 

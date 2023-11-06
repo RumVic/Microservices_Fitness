@@ -1,7 +1,7 @@
 package by.it_akademy.fitness.controller;
 
 import by.it_akademy.fitness.idto.InputDTO;
-import by.it_akademy.fitness.security_module.odto.OutPage;
+import by.it_akademy.fitness.odto.OutPage;
 import by.it_akademy.fitness.odto.OutputAuditDTO;
 import by.it_akademy.fitness.service.api.IAuditService;
 import lombok.RequiredArgsConstructor;

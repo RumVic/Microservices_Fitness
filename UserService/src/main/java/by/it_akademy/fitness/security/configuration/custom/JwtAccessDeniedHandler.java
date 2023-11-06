@@ -1,8 +1,8 @@
-package by.it_akademy.fitness.security_module.configuration.costom;
+package by.it_akademy.fitness.security.configuration.custom;
 
 
+import by.it_akademy.fitness.security.odto.OutputResponseError;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import by.it_akademy.fitness.security_module.odto.OutputResponseError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
